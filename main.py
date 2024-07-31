@@ -2,95 +2,106 @@ import random
 
 # vector = ["name", "level", "questions solved"];
 # data.txt is the name of where the user data will be stored
-# formatting data?
-# formatting data is simple use ##//## to separate each vector :)
-
 # loading the user in with their data
-fp = open("users.txt", "r")
-names = []
-for line in fp:
-    names = line.strip().split(",")
 
-first = input("Create New User or Login? (N/L) \n")
-if first.lower() == "n":
-    name = input("enter name (will be saved to disk) \n")
-    file = open("users.txt", "a")
-    listy = f"{name},"
-    file.write(listy)
-if first.lower() == "l":
-    print("What is your username?")
-    for users in names:
-        print(f"{users}")
-    getuser = input("type your username: ")
-    if getuser in names:
-        print("Loading your data")
-        fp = open("data.txt", "r")
-        # implement storage here
-        print("Done!")
-
-print("Welcome to Math Off\nIn this program you will solve math problems to increase your mental math abilities and "
-      "face off opponents.\nI wish you the best of luck in your journey and hope the best for you.")
-
-game_mode = int(input("Select your Game mode! \n 1.) Solo Leveling \n 2.) Multiplayer \n 3.) QuickTime\n"))
-
-if game_mode == 1:
+x = 0
 
 
-    i = 0
-    while i < 10:
-        questionType = random.randint(0,3)
 
-        if questionType == 0:
-            numberOne = random.randint(1, 10)
-            numberTwo = random.randint(1, 10)
-            userAnswer = int(input(f"{numberOne} + {numberTwo}?\n"))
-            if userAnswer == numberOne + numberTwo:
-                print("Correct")
+with open("users.txt", "r") as fp:
+    names = [line.strip() for line in fp]
+
+class SoloLeveling:
+    def __init__(self):
+        self.User = None
+        self.Level = 1
+        self.questionsSolved = 0
+        self.stats = [self.User, self.Level, self.questionsSolved]
+        print("Welcome to Math Off\nIn this program you will solve math problems to increase your mental math "
+              "abilities and face off opponents.\nI wish you the best of luck in your journey and hope the best for you.")
+
+    def createData(self, user: str):
+        with open("data.txt", "a") as addData:
+            Level = 0
+            questionsSolved = 0
+            User = user
+            addData.write(f"{User},{Level},{questionsSolved}\n")
+
+    def getData(self, user: str):
+        with open("data.txt", "r") as openData:
+            for userdata in openData:
+                vector = userdata.strip().split(",")
+                if vector[0] == user:
+                    print("User found!")
+                    self.User = user
+                    self.Level = int(vector[1])
+                    self.questionsSolved = int(vector[2])
+                    print("Data Loaded.")
+                    return
+            print("User not found in data.txt.")
+
+    def getUserInfo(self, LoginType: str):
+        if LoginType.lower() == "l":
+            print("What is your username?")
+            for users in names:
+                print(f"{users}")
+            getuser = input("Type your username: ")
+            if getuser in names:
+                print("Loading your data")
+                self.getData(getuser)
+                print("Done!")
             else:
-                print("Incorrect!")
-                while userAnswer != (numberTwo + numberOne):
-                    userAnswer = int(input(f"{numberOne} + {numberTwo}?\n"))
-        if questionType == 1:
+                print("Username not found.")
+        elif LoginType.lower() == "n":
+            newUsername = input("What is the Username you want to use? : ")
+            self.createData(newUsername)
+            self.getData(newUsername)
 
-            numberOne = random.randint(1, 10)
-            numberTwo = random.randint(1, 10)
-            while numberOne < numberTwo:
-                numberTwo = random.randint(1, 10)
-            userAnswer = int(input(f"{numberOne} - {numberTwo}?\n"))
-            if userAnswer == numberOne - numberTwo:
-                print("Correct")
-            else:
-                print("Incorrect!")
-                while userAnswer != (numberTwo - numberOne):
-                    userAnswer = int(input(f"{numberOne} - {numberTwo}?\n"))
-        if questionType == 2:
+    def askQuestion(self):
+        qtype = random.randint(0, 3)
 
-            numberOne = random.randint(1, 10)
-            numberTwo = random.randint(1, 10)
+        numberOne = 1
+        numberTwo = 11
 
-            userAnswer = int(input(f"{numberOne} * {numberTwo}?\n"))
-            if userAnswer == numberOne * numberTwo:
-                print("Correct")
-            else:
-                print("Incorrect!")
-                while userAnswer != (numberTwo * numberOne):
-                    userAnswer = int(input(f"{numberOne} * {numberTwo}?\n"))
-        if questionType == 3:
-
-            numberOne = random.randint(1, 10)
-            numberTwo = random.randint(1, 10)
-
+        if qtype == 2:
             while numberOne % numberTwo != 0:
                 numberOne = random.randint(1, 10)
                 numberTwo = random.randint(1, 10)
+        else:
+            while numberOne < numberTwo:
+                numberOne = random.randint(1, 10)
+                numberTwo = random.randint(1, 10)
 
-            userAnswer = int(input(f"{numberOne} / {numberTwo}?\n"))
-            if userAnswer == numberOne / numberTwo:
-                print("Correct")
+        typeShit = [(numberOne + numberTwo), (numberOne * numberTwo), (numberOne / numberTwo), (numberOne - numberTwo)]
+        problemType = ["+", "*", "/", "-"]
+        realAnswer = typeShit[qtype]
+        userAnswer = -1
+
+        while userAnswer != realAnswer:
+            userAnswer = int(input(f"{numberOne} {problemType[qtype]} {numberTwo} ?\n"))
+            if userAnswer == realAnswer:
+                print("Correct!")
             else:
-                print("Incorrect!")
-                while userAnswer != (numberTwo / numberOne):
-                    userAnswer = int(input(f"{numberOne} / {numberTwo}?\n"))
-        i += 1
+                print("Incorrect")
 
+    def saveData(self, solvedQuestions: int):
+        with open("data.txt", "r") as fp:
+            lines = fp.readlines()
 
+        with open("data.txt", "w") as fp:
+            for userprofile in lines:
+                temp = userprofile.strip().split(",")
+                if temp[0] == self.User:
+                    temp[2] = str(int(temp[2]) + solvedQuestions)
+                fp.write(",".join(temp) + "\n")
+
+    def startSession(self, qAmount: int):
+        for i in range(qAmount):
+            self.askQuestion()
+        self.questionsSolved += qAmount
+        self.saveData(qAmount)
+
+game = SoloLeveling()
+typeShit = input("Create New User or Login ? (N/L) : ")
+game.getUserInfo(LoginType=typeShit)
+game.startSession(qAmount=10)

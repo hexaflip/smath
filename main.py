@@ -1,15 +1,59 @@
 import random
+import streamlit as st
+import time
+import pandas as pd
+import numpy as np
+
 
 # vector = ["name", "level", "questions solved"];
 # data.txt is the name of where the user data will be stored
 # loading the user in with their data
 
-x = 0
+def askQuestion():
+    thing = []
+    qtype = random.randint(0, 3)
+
+    numberOne = 1
+    numberTwo = 11
+
+    if qtype == 2:
+        while numberOne % numberTwo != 0:
+            numberOne = random.randint(1, 10)
+            numberTwo = random.randint(1, 10)
+    else:
+        while numberOne < numberTwo:
+            numberOne = random.randint(1, 10)
+            numberTwo = random.randint(1, 10)
+
+    typeShit = [(numberOne + numberTwo), (numberOne * numberTwo), (numberOne / numberTwo), (numberOne - numberTwo)]
+    problemType = ["+", "x", "/", "-"]
+    realAnswer = typeShit[qtype]
+    thing.append(realAnswer)
+    thing.append(numberOne)
+    thing.append(numberTwo)
+    thing.append(problemType[qtype])
+    return thing
 
 
+# Main app
+st.write("""
+# Welcome to Math Off!
+Made by *Thomas Laskowski*
+""")
+
+st.write("My Website [:link:](%s)" % "https://tomski.work/")
+
+x = st.write("")
+
+if st.button("Generate Problem"):
+    vals = askQuestion()
+    x = st.write(f"<p style='font-size:96px;'>{vals[1]} {vals[3]} {vals[2]}</p>", unsafe_allow_html=True)
 
 with open("users.txt", "r") as fp:
     names = [line.strip() for line in fp]
+
+
+# Functions to maybe use in the future?
 
 class SoloLeveling:
     def __init__(self):
@@ -18,7 +62,7 @@ class SoloLeveling:
         self.questionsSolved = 0
         self.stats = [self.User, self.Level, self.questionsSolved]
         print("Welcome to Math Off\nIn this program you will solve math problems to increase your mental math "
-              "abilities and face off opponents.\nI wish you the best of luck in your journey and hope the best for you.")
+              "abilities.\nI wish you the best of luck in your journey and hope the best for you.")
 
     def createData(self, user: str):
         with open("data.txt", "a") as addData:
@@ -100,8 +144,3 @@ class SoloLeveling:
             self.askQuestion()
         self.questionsSolved += qAmount
         self.saveData(qAmount)
-
-game = SoloLeveling()
-typeShit = input("Create New User or Login ? (N/L) : ")
-game.getUserInfo(LoginType=typeShit)
-game.startSession(qAmount=10)

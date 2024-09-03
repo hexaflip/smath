@@ -11,7 +11,7 @@ In this program you simply start the game and doing math problems, you will be t
 # Calculating XP and Levels
 I used [Jake Lee's](https://blog.jakelee.co.uk/converting-levels-into-xp-vice-versa/) way of calculating XP. I decided to go with the following formula after reading his blog:
 
-Level = \$ L $
+Level = \$ L \$
 
  XP = \$(level/0.07)^⅔$ + log(\$L$)
 

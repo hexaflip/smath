@@ -8,8 +8,9 @@ In this program you simply start the game and doing math problems, you will be t
 
 ---
 
-# Chapter Two: Foo
+# Calculating XP and Levels
+I used [Jake Lee's](https://blog.jakelee.co.uk/converting-levels-into-xp-vice-versa/) way of calculating XP and Levels and decided with the following formula:
 
-Foo is the way...
+$\ L = (x/0.07)^(2/3) + log(x)$
 
 ---
